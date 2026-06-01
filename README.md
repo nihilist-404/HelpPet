@@ -32,24 +32,6 @@ O aplicativo permite visualizar pets disponíveis para adoção, consultar infor
 
 📂 Estrutura do Projeto
 
-src
-│
-├── navigation
-│   └── TabNavigator.tsx
-│
-├── screens
-│   ├── HomeScreen.tsx
-│   ├── PetsScreen.tsx
-│   ├── DetailScreen.tsx
-│   └── ProfileScreen.tsx
-│
-├── components
-│
-├── data
-│
-├── styles
-│
-└── assets
 
 ---
 
