@@ -32,6 +32,60 @@ O aplicativo permite visualizar pets disponíveis para adoção, consultar infor
 
 📂 Estrutura do Projeto
 
+HelpPet
+│
+├── assets/
+│   ├── adaptive-icon.png
+│   ├── favicon.png
+│   ├── icon.png
+│   └── splash-icon.png
+│
+├── src/
+│   │
+│   ├── navigation/
+│   │   └── TabNavigator.tsx
+│   │
+│   ├── screens/
+│   │   ├── HomeScreen.tsx
+│   │   ├── PetsScreen.tsx
+│   │   ├── DetailScreen.tsx
+│   │   └── ProfileScreen.tsx
+│   │
+│   ├── components/
+│   │   ├── PetCard.tsx
+│   │   └── CustomButton.tsx
+│   │
+│   ├── data/
+│   │   └── pets.ts
+│   │
+│   ├── styles/
+│   │   ├── colors.ts
+│   │   └── globalStyles.ts
+│   │
+│   └── types/
+│       └── navigation.ts
+│
+├── App.tsx
+├── app.json
+├── package.json
+├── tsconfig.json
+└── README.md
+
+ 
+-Estrutura de Navegação
+ 
+NavigationContainer
+│
+└── BottomTabNavigator
+    │
+    ├── HomeScreen
+    │
+    ├── PetStack
+    │   ├── PetsScreen
+    │   └── DetailScreen
+    │
+    └── ProfileScreen
+
 
 ---
 
@@ -59,7 +113,7 @@ O aplicativo permite visualizar pets disponíveis para adoção, consultar infor
 
 - Personalização do perfil do usuário
 - Seleção de imagens da galeria
-- Integração com recursos nativos do dispositivo
+- Integração com recursos nativos do dispositivo (câmera)
 
 ---
 
