@@ -1,92 +1,85 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   Image,
   Button,
   StyleSheet,
-  Alert,
 } from "react-native";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 
 export default function ProfileScreen() {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState("");
 
-  
-  async function pickImage() {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-    if (status !== 'granted') {
-      Alert.alert("Permissão necessária", "Precisamos de acesso à sua galeria para escolher uma foto.");
-      return;
-    }
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true, // Permite que o usuário corte a foto em formato quadrado
-      aspect: [1, 1],
-      quality: 0.7,
-    });
+  async function loadProfile() {
+    const photo =
+      await AsyncStorage.getItem("profilePhoto");
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    if (photo) {
+      setImage(photo);
     }
   }
 
-  
-  async function takePhoto() {
-    // Solicita permissão para usar a câmera
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    
-    if (status !== 'granted') {
-      Alert.alert("Permissão necessária", "Precisamos de acesso à sua câmera para tirar a foto.");
-      return;
-    }
+  async function savePhoto(uri: string) {
+    setImage(uri);
 
-    
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true, // Deixa cortar a foto antes de salvar
-      aspect: [1, 1], // Força o corte quadrado (perfeito para perfil)
-      quality: 0.7,   // Reduz um pouco o peso da imagem (bom para performance)
-    });
+    await AsyncStorage.setItem(
+      "profilePhoto",
+      uri
+    );
+  }
+
+  async function pickImage() {
+    const result =
+      await ImagePicker.launchImageLibraryAsync();
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri); 
+      savePhoto(result.assets[0].uri);
+    }
+  }
+
+  async function takePhoto() {
+    const permission =
+      await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permission.granted) return;
+
+    const result =
+      await ImagePicker.launchCameraAsync();
+
+    if (!result.canceled) {
+      savePhoto(result.assets[0].uri);
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Meu Perfil</Text>
+      <Text style={styles.title}>
+        Meu Perfil
+      </Text>
 
-      {/* Renderiza a foto escolhida/tirada ou um placeholder cinza caso não exista */}
-      <Image
-        source={
-          image 
-            ? { uri: image } 
-            : { uri: "https://via.placeholder.com/200/cccccc/ffffff?text=Sem+Foto" }
-        }
-        style={styles.image}
+      {image ? (
+        <Image
+          source={{ uri: image }}
+          style={styles.image}
+        />
+      ) : null}
+
+      <Button
+        title="Escolher Foto"
+        onPress={pickImage}
       />
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Tirar Foto com Câmera"
-          onPress={takePhoto}
-          color="#007AFF"
-        />
-        
-        <View style={{ height: 10 }} /> {/* Espaçamento entre os botões */}
-        
-        <Button
-          title="Escolher da Galeria"
-          onPress={pickImage}
-          color="#5856D6"
-        />
-      </View>
+      <Button
+        title="Tirar Foto"
+        onPress={takePhoto}
+      />
     </View>
   );
 }
@@ -94,26 +87,20 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#fff"
+    alignItems: "center",
   },
+
   title: {
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
   },
+
   image: {
-    width: 200,
-    height: 200,
-    borderRadius: 100, // Deixa o avatar perfeitamente redondo
-    marginBottom: 30,
-    borderWidth: 2,
-    borderColor: "#ddd"
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    marginBottom: 20,
   },
-  buttonContainer: {
-    width: "100%",
-    paddingHorizontal: 20,
-  }
 });
